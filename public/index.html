@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>API Integration Portal</h1>
+    <p>A showcase of different ways to collect data from APIs</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Auth — JWT Authentication</h2>
+        <span class="badge teal">Login / Protected Routes</span>
+      </div>
+      <p class="description">
+        Register an account, log in to receive a <strong>JWT token</strong>, then use that token
+        to access a protected route. Every request to a protected endpoint must carry the token
+        in the <code>Authorization</code> header.
+      </p>
+
+      <div class="auth-grid">
+        <div class="auth-col">
+          <h3 class="auth-heading">Register / Login</h3>
+          <input id="auth-username" type="text" placeholder="Username">
+          <div class="password-wrap">
+            <input id="auth-password" type="password" placeholder="Password">
+            <button id="auth-toggle-pw" type="button" title="Show/hide password">👁</button>
+          </div>
+          <div class="auth-buttons">
+            <button id="auth-register-btn">Register</button>
+            <button id="auth-login-btn">Login</button>
+          </div>
+          <div id="auth-status"></div>
+        </div>
+
+        <div class="auth-col">
+          <h3 class="auth-heading">Protected Route</h3>
+          <p class="description" style="margin-bottom:0.8rem">
+            Once logged in, hit the protected endpoint. Without a token it returns 401 Unauthorized.
+          </p>
+          <button id="auth-me-btn">GET /auth/me</button>
+          <pre id="auth-response">// Response will appear here</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Part 1 — REST API</h2>
+        <span class="badge">Request / Response</span>
+      </div>
+      <p class="description">
+        Click the button to fetch a list of European countries from a public REST API.
+        Your browser asks <strong>our server</strong>, which then asks the external API and sends the data back.
+      </p>
+      <button id="fetch-btn">Fetch Countries</button>
+      <div id="status"></div>
+      <div id="results"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Part 2 — Webhooks</h2>
+        <span class="badge">Event Driven</span>
+      </div>
+      <p class="description">
+        Instead of you asking for data, the external service <strong>calls your server</strong> when something happens.
+        Click the button to simulate an event being sent — just like GitHub or Stripe would send one.
+        Each event is signed so your server can verify it's legitimate.
+      </p>
+      <button id="simulate-btn">Simulate Incoming Event</button>
+      <div id="webhook-status"></div>
+      <div id="webhook-log"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Part 3 — WebSockets</h2>
+        <span class="badge purple">Real-time / Two-way</span>
+      </div>
+      <p class="description">
+        A persistent connection where <strong>either side can send data at any time</strong>.
+        Once connected, the server pushes live price updates every second — no requests needed.
+        You can also send a message to the server and it will respond instantly.
+      </p>
+      <div class="ws-controls">
+        <button id="ws-connect-btn">Connect</button>
+        <span id="ws-indicator" class="ws-dot disconnected"></span>
+        <span id="ws-state">Disconnected</span>
+      </div>
+
+      <div id="ticker-grid"></div>
+
+      <div class="ws-chat">
+        <input id="ws-input" type="text" placeholder="Type a message to send to the server..." disabled>
+        <button id="ws-send-btn" disabled>Send</button>
+      </div>
+      <div id="ws-messages"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Database — SQLite</h2>
+        <span class="badge yellow">Persistence</span>
+      </div>
+      <p class="description">
+        Users and webhook events are now stored in a real SQLite database file on disk.
+        Register a user and simulate some webhook events, then <strong>restart the server</strong> —
+        the data will still be here. The PostgreSQL version uses the same queries, just a different driver.
+      </p>
+      <button id="db-refresh-btn">Refresh Stats</button>
+      <div class="db-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="db-user-count">—</div>
+          <div class="stat-label">Registered Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="db-event-count">—</div>
+          <div class="stat-label">Webhook Events</div>
+        </div>
+      </div>
+      <div class="db-table-wrap">
+        <table id="db-events-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Event</th>
+              <th>Received At</th>
+            </tr>
+          </thead>
+          <tbody id="db-events-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Part 4 — GraphQL</h2>
+        <span class="badge orange">Query Exactly What You Need</span>
+      </div>
+      <p class="description">
+        One endpoint — <code>/graphql</code> — handles everything. You write a query that describes
+        exactly which fields you want. The server returns precisely that shape, nothing more.
+        Try the presets below and watch how the response changes.
+      </p>
+
+      <div class="gql-presets">
+        <button class="preset-btn" data-preset="all">All fields</button>
+        <button class="preset-btn" data-preset="minimal">Names only</button>
+        <button class="preset-btn" data-preset="region">Filter by region</button>
+        <button class="preset-btn" data-preset="single">Single country</button>
+      </div>
+
+      <div class="gql-editor">
+        <div class="gql-col">
+          <div class="gql-label">Query</div>
+          <textarea id="gql-query" spellcheck="false"></textarea>
+          <button id="gql-run-btn">Run Query</button>
+        </div>
+        <div class="gql-col">
+          <div class="gql-label">Response</div>
+          <pre id="gql-response">// Response will appear here</pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
